@@ -14,18 +14,32 @@ This repository redistributes TFS under the GNU GPL v2. Source for the engine is
 
 ## What you need besides this repo
 
-1. **MariaDB or MySQL** for player accounts. Docker is the fastest way to get it.
+1. **MariaDB or MySQL** for player accounts. [Docker Desktop](https://www.docker.com/products/docker-desktop/) is enough.
 2. A **protocol 13.10 client**. Use an open-source client such as [OTClient](https://github.com/mehah/otclient). Do not use CipSoft's official Tibia client files unless you have the right to do so.
 
-## Start the database
+## Windows + Docker Desktop
 
-From the repository root:
+1. Start **Docker Desktop** and wait until it is running.
+2. Clone or download this repository (use the branch from the pull request if it is not merged yet).
+3. Double-click `start-windows.bat` in the repo root.
 
-```bash
-docker compose up -d db
+That starts MariaDB in Docker, waits until the schema is imported, then launches `server/theforgottenserver-x64.exe`. The first run downloads the `mariadb:11` image.
+
+To start only the database:
+
+```bat
+docker compose up -d --wait db
 ```
 
-Wait until the container is healthy. The first boot creates the `forgottenserver` database, imports `server/schema.sql`, and adds the starter accounts.
+Then double-click `server/start.bat`.
+
+If port **3306** is already taken (XAMPP, local MySQL), stop that service or change the left-hand port in `docker-compose.yml`.
+
+Default database settings in `server/config.lua`:
+
+- host `127.0.0.1`, port `3306`
+- user `forgottenserver`, password `tfs`
+- database `forgottenserver`
 
 Without Docker, install MariaDB, then as an admin user:
 
@@ -35,21 +49,7 @@ mysql -u forgottenserver -ptfs forgottenserver < server/schema.sql
 mysql -u forgottenserver -ptfs forgottenserver < server/init-accounts.sql
 ```
 
-Default database settings in `server/config.lua`:
-
-- host `127.0.0.1`, port `3306`
-- user `forgottenserver`, password `tfs`
-- database `forgottenserver`
-
-## Start the server
-
-### Windows (64-bit)
-
-1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) **or** [MariaDB](https://mariadb.org/download/).
-2. Start the database as above.
-3. Double-click `server/start.bat`, or run `theforgottenserver-x64.exe` from the `server` folder.
-
-### Linux (x86_64, glibc 2.39+ such as Ubuntu 24.04)
+## Linux
 
 Install runtime libraries if the binary does not start:
 
