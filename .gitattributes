@@ -1,0 +1,6 @@
+*.exe binary
+*.dll binary
+*.otbm binary
+*.pem binary
+*.dll linguist-vendored
+vendor/forgottenserver-1.6/** linguist-vendored

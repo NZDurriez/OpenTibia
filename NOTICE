@@ -1,0 +1,16 @@
+This repository packages The Forgotten Server, a free and open-source MMORPG
+server emulator.
+
+The Forgotten Server
+  https://github.com/otland/forgottenserver
+  Copyright (C) The Forgotten Server Authors
+  Licensed under the GNU General Public License, version 2
+  Tag v1.6 / commit 098641981400f8ff89959f427f0e8718d9dd22e2
+
+Engine source corresponding to the included binaries is in
+vendor/forgottenserver-1.6/. The Windows executable and DLLs are the official
+v1.6 release assets from OTLand. The Linux executable was compiled from the
+same tag.
+
+The official Tibia client, sprites, and related CipSoft assets are not included
+and are not part of this project.
