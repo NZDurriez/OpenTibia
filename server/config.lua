@@ -34,7 +34,9 @@ allowWalkthrough = true
 serverName = "OpenTibia"
 statusTimeout = 5000
 replaceKickOnLogin = true
-maxPacketsPerSecond = 25
+-- OTClient sends walk prediction, ping, and extra opcodes. The TFS default of 25
+-- disconnects it while walking (rubberband, then ERROR 10053).
+maxPacketsPerSecond = 100
 enableTwoFactorAuth = false
 
 -- MySQL / MariaDB
