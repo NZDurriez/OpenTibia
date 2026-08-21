@@ -1,27 +1,29 @@
 # Open Tibia server
 
-Ready-to-run [The Forgotten Server](https://github.com/otland/forgottenserver) **1.6** package. Binaries are included for **Windows 64-bit** and **Linux x86_64**. You do not need a compiler to start the server.
+Ready-to-run [The Forgotten Server](https://github.com/otland/forgottenserver) **1.6** package plus a matching [OTClient](https://github.com/opentibiabr/otclient). You do not need a compiler.
 
 | Item | Value |
 | --- | --- |
 | Engine | The Forgotten Server 1.6 |
 | Protocol | **13.10** (13.11 clients also accepted) |
 | Map | `forgotten` (official TFS sample map) |
-| Windows | `server/theforgottenserver-x64.exe` plus official OTLand DLLs |
-| Linux | `server/tfs`, compiled on Ubuntu 24.04 with GCC 13.3 |
+| Windows server | `server/theforgottenserver-x64.exe` plus official OTLand DLLs |
+| Linux server | `server/tfs`, compiled on Ubuntu 24.04 with GCC 13.3 |
+| Windows client | `client/otclient.exe` — OTClient Redemption 4.1 (OpenGL x64) |
 
-This repository redistributes TFS under the GNU GPL v2. Source for the engine is in `vendor/forgottenserver-1.6/`. See `NOTICE` and `server/BUILDINFO.txt`.
+This repository redistributes TFS under the GNU GPL v2 and OTClient under MIT. Engine source for the server is in `vendor/forgottenserver-1.6/`. See `NOTICE`, `server/BUILDINFO.txt`, and `client/BUILDINFO.txt`.
 
 ## What you need besides this repo
 
 1. **MariaDB or MySQL** for player accounts. [Docker Desktop](https://www.docker.com/products/docker-desktop/) is enough.
-2. A **protocol 13.10 client**. Use an open-source client such as [OTClient](https://github.com/mehah/otclient). Do not use CipSoft's official Tibia client files unless you have the right to do so.
+2. A **protocol 13.10 client**. This repo includes a ready-to-run Windows build in `client/` ([OTClient Redemption 4.1](https://github.com/opentibiabr/otclient)). You do not need to compile it.
 
 ## Windows + Docker Desktop
 
 1. Start **Docker Desktop** and wait until it is running.
 2. Clone or download this repository (use the branch from the pull request if it is not merged yet).
-3. Double-click `start-windows.bat` in the repo root.
+3. Double-click `start-windows.bat` in the repo root and wait until the world is open.
+4. Double-click `client\start-client.bat` to open OTClient. Log in with `1` / `1`.
 
 That starts MariaDB in Docker, waits until the schema is imported, then launches `server/theforgottenserver-x64.exe`. The first run downloads the `mariadb:11` image.
 
@@ -80,7 +82,9 @@ Starter accounts from `server/init-accounts.sql`:
 | `1` | `1` | `Player` | Normal player, level 8 |
 | `god` | `god` | `God` | God group, for testing commands |
 
-In the client, connect to **127.0.0.1**. If the client asks for a login port, use **7171**. Newer 13.x clients often use the HTTP login port **8080**.
+The bundled Windows client (`client/otclient.exe`) is already set to HTTP login at `http://127.0.0.1:8080`. The first launch may download 13.10 graphics into `client/data/things/1310/`. See `client/README.md`.
+
+If you use a different 13.x client, connect to **127.0.0.1** with HTTP login port **8080**.
 
 Change these passwords before exposing the server to a network.
 
@@ -89,10 +93,11 @@ Change these passwords before exposing the server to a network.
 - `server/config.lua` — IP, ports, rates, MySQL, world name
 - `server/data/` — scripts, items, NPCs, monsters, map
 - `server/schema.sql` — database structure
+- `client/` — prebuilt OTClient 4.1 for Windows (protocol 13.10)
 - `scripts/build-linux.sh` — rebuild the Linux binary from `vendor/forgottenserver-1.6`
 
 To accept connections from other computers, set `ip` in `server/config.lua` to this machine's LAN or public address and open ports 7171, 7172, and 8080.
 
 ## License
 
-The Forgotten Server is free software licensed under the GNU General Public License v2. See `LICENSE`.
+The Forgotten Server is free software licensed under the GNU General Public License v2. See `LICENSE`. OTClient is MIT-licensed; see `client/LICENSE`.

@@ -4,3 +4,6 @@
 *.pem binary
 *.dll linguist-vendored
 vendor/forgottenserver-1.6/** linguist-vendored
+client/data/** linguist-vendored
+client/modules/** linguist-vendored
+client/mods/** linguist-vendored

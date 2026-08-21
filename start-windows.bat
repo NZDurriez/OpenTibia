@@ -38,6 +38,7 @@ echo.
 echo Starting Open Tibia server (The Forgotten Server 1.6, protocol 13.10)...
 echo Login: 127.0.0.1  ports 7171 / 7172 / HTTP 8080
 echo Accounts:  1 / 1  (Player)    god / god  (God)
+echo When the world is open, start the client:  client\start-client.bat
 echo.
 cd server
 theforgottenserver-x64.exe
