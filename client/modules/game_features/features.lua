@@ -12,7 +12,8 @@ controller:registerEvents(g_game, {
         -- For Walk. Keep GameAllowPreWalk enabled: without it OTClient will not
         -- step at all if client/server positions ever disagree.
         g_game.enableFeature(GameAllowPreWalk)
-        g_game.enableFeature(GameMapCache)
+        -- GameMapCache treats unknown tiles as blocked and rubberbands on TFS.
+        g_game.disableFeature(GameMapCache)
         -- g_game.enableFeature(GameSmoothWalkElevation)
 
         if version >= 750 then
@@ -239,7 +240,9 @@ controller:registerEvents(g_game, {
             g_game.enableFeature(GameDoubleHealth)
             g_game.enableFeature(GameUshortSpell)
             g_game.enableFeature(GameConcotions)
-            g_game.enableFeature(GameAnthem)
+            -- TFS 1.6 still uses 0x85 for distance missiles. Anthem steals that
+            -- opcode and desyncs the remaining login/map packets.
+            g_game.disableFeature(GameAnthem)
         end
 
         if version >= 1314 then

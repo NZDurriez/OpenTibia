@@ -34,9 +34,9 @@ allowWalkthrough = true
 serverName = "OpenTibia"
 statusTimeout = 5000
 replaceKickOnLogin = true
--- OTClient walk prediction sends many packets. 25 kicks you; 100 can still
--- stutter. 500 is safe for local play. Do not set this to 0.
-maxPacketsPerSecond = 500
+-- OTClient walk prediction sends many packets. 25 kicks you; 0 kicks you
+-- immediately. 1000 is safe for local play.
+maxPacketsPerSecond = 1000
 enableTwoFactorAuth = false
 
 -- MySQL / MariaDB

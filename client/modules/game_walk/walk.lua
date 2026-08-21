@@ -94,19 +94,21 @@ local function walk(dir)
         if isAutoWalking then
             player:stopAutoWalk()
         end
-        player:lockWalk(player:getStepDuration() + 50)
-        return
     end
 
-    if not player:canWalk() then
+    -- Already predicting this step: wait. Do not flood TFS with walk packets.
+    if player:isPreWalking() then
         if lastWalkDir ~= dir then
             nextWalkDir = dir
         end
-        -- Without prewalk, canWalk() stays false forever if the client tile
-        -- disagrees with the server. Still send one walk so we can resync.
-        if not g_game.getFeature(GameAllowPreWalk) and not player:isWalkLocked() then
-            modules.game_interface.lastManualWalk = g_clock.millis()
-            g_game.walk(dir)
+        return
+    end
+
+    -- Mid-animation on a normal client walk: wait for the step to finish.
+    -- If the server-walk flag is stuck, keep sending so we are not frozen.
+    if not player:canWalk() and player:isWalking() and not player:isServerWalking() then
+        if lastWalkDir ~= dir then
+            nextWalkDir = dir
         end
         return
     end
@@ -114,22 +116,17 @@ local function walk(dir)
     nextWalkDir = nil
     lastWalkDir = dir
 
+    -- Send first so a client/server tile mismatch cannot trap us.
+    modules.game_interface.lastManualWalk = g_clock.millis()
+    g_game.walk(dir)
+
     if g_game.getFeature(GameAllowPreWalk) then
         local toPos = Position.translatedToDirection(player:getPosition(), dir)
         local toTile = g_map.getTile(toPos)
         if toTile and toTile:isWalkable() then
             player:preWalk(dir)
-        elseif not canChangeFloor(toPos, 1) and not canChangeFloor(toPos, -1) then
-            -- Known wall: do not send. Unknown tile (map not cached yet): still
-            -- ask the server, otherwise the player can freeze at login.
-            if toTile then
-                return false
-            end
         end
     end
-
-    modules.game_interface.lastManualWalk = g_clock.millis()
-    g_game.walk(dir)
     return true
 end
 
@@ -211,7 +208,7 @@ end
 
 --- Binds movement keys to their respective directions.
 local function bindKeys()
-    modules.game_interface.getRootPanel():setAutoRepeatDelay(200)
+    modules.game_interface.getRootPanel():setAutoRepeatDelay(50)
 
     for _, keyDir in ipairs(keys) do bindWalkKey(keyDir[1], keyDir[2]) end
     for _, keyDir in ipairs(turnKeys) do bindTurnKey(keyDir[1], keyDir[2]) end
@@ -283,11 +280,9 @@ function WalkController:onGameStart()
     modules.game_interface.getRootPanel().onFocusChange = stopSmartWalk
     modules.game_joystick.addOnJoystickMoveListener(function(dir) g_game.walk(dir) end)
 
-    if not g_game.isOfficialTibia() then
-        g_game.enableFeature(GameForceFirstAutoWalkStep)
-    else
-        g_game.disableFeature(GameForceFirstAutoWalkStep)
-    end
+    -- TFS 1.6 autowalk silently drops a first-step 0x64 packet when the
+    -- length check fails. Always use the single-step walk opcodes instead.
+    g_game.disableFeature(GameForceFirstAutoWalkStep)
 end
 
 --- Cleans up resources when the game ends.

@@ -543,7 +543,12 @@ function load()
     local settings = g_settings.getNode('game_console')
     if settings then
         messageHistory = settings.messageHistory or {}
-        consoleToggleChat.isChecked = settings.wasdMode or false
+        -- nil means first time with this client package: default to WASD walking.
+        if settings.wasdMode == nil then
+            consoleToggleChat.isChecked = true
+        else
+            consoleToggleChat.isChecked = settings.wasdMode and true or false
+        end
         showHighlightedUnderline = settings.showHighlightedUnderline or false
         if consoleToggleChat.isChecked then
             consoleToggleChat:setText(tr('Chat Off'))
@@ -554,6 +559,9 @@ function load()
         if g_game.isOnline() then
             updateChatMode()
         end
+    else
+        consoleToggleChat.isChecked = true
+        consoleToggleChat:setText(tr('Chat Off'))
     end
     loadCommunicationSettings()
 end

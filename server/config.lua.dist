@@ -35,7 +35,7 @@ serverName = "Forgotten"
 statusTimeout = 5000
 replaceKickOnLogin = true
 -- OTClient walk prediction sends many packets. Do not set this to 0.
-maxPacketsPerSecond = 500
+maxPacketsPerSecond = 1000
 enableTwoFactorAuth = true
 
 -- Deaths
