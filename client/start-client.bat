@@ -18,7 +18,7 @@ if not exist "mods\client_mods\mods.otmod" (
 echo.
 echo OTClient Redemption 4.1  -  protocol 13.10  -  HTTP login 127.0.0.1:8080
 echo Start the server first (start-windows.bat in the repo root).
-echo Login:  account 1 / password 1    or    god / god
+echo Login:  Email box: 1    password: 1     (or god / god)
 echo.
 echo The first launch should ask to download 13.10 graphics. Click Download.
 echo If that fails, run fetch-13.10-assets.bat in this folder.

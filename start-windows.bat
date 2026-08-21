@@ -28,6 +28,12 @@ if errorlevel 1 (
   exit /b 1
 )
 
+echo Updating starter login accounts...
+docker compose exec -T db mariadb -u forgottenserver -ptfs forgottenserver < server\init-accounts.sql
+if errorlevel 1 (
+  echo Warning: could not update starter accounts. You can still log in after importing server\init-accounts.sql
+)
+
 if not exist "server\theforgottenserver-x64.exe" (
   echo Could not find server\theforgottenserver-x64.exe
   pause
@@ -37,7 +43,7 @@ if not exist "server\theforgottenserver-x64.exe" (
 echo.
 echo Starting Open Tibia server (The Forgotten Server 1.6, protocol 13.10)...
 echo Login: 127.0.0.1  ports 7171 / 7172 / HTTP 8080
-echo Accounts:  1 / 1  (Player)    god / god  (God)
+echo Accounts:  type 1 in the Email box, password 1     (God: god / god)
 echo When the world is open, start the client:  client\start-client.bat
 echo.
 cd server

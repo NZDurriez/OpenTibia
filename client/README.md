@@ -8,7 +8,7 @@ You do not need to compile anything.
 
 1. Start the game server first (`start-windows.bat` in the repo root) and wait until it says the world is open.
 2. Double-click `start-client.bat` (or `otclient.exe`).
-3. Log in with account `1` / password `1`.
+3. The first box is labeled **Email**. Type `1` (not an email address) and password `1`.
 
 The login screen is pre-filled:
 

@@ -75,12 +75,14 @@ A successful boot prints that the game world is open and listens on:
 
 ## Log in
 
-Starter accounts from `server/init-accounts.sql`:
+The 13.10 login screen labels the first box **Email**, but these accounts use the same value as the account name:
 
-| Account | Password | Character | Notes |
+| Email / account | Password | Character | Notes |
 | --- | --- | --- | --- |
 | `1` | `1` | `Player` | Normal player, level 8 |
 | `god` | `god` | `God` | God group, for testing commands |
+
+If you still have an older database that used `player@localhost`, that also works with password `1` until you restart with the updated `start-windows.bat`.
 
 The bundled Windows client (`client/otclient.exe`) is already set to HTTP login at `http://127.0.0.1:8080`. The first launch asks to download 13.10 graphics into `client/data/things/1310/`. If that fails, run `client/fetch-13.10-assets.bat`. See `client/README.md`.
 

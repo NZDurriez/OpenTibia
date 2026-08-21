@@ -1,12 +1,14 @@
 -- Starter accounts for local testing.
--- Passwords are stored as SHA1, matching The Forgotten Server login check.
+-- Passwords are SHA1. Protocol 13.10 HTTP login looks up `email`, not `name`,
+-- so email is set to the same value you type in the client (1 / god).
 
 INSERT INTO `accounts` (`id`, `name`, `password`, `type`, `email`) VALUES
-(1, '1', SHA1('1'), 1, 'player@localhost'),
-(2, 'god', SHA1('god'), 6, 'god@localhost')
+(1, '1', SHA1('1'), 1, '1'),
+(2, 'god', SHA1('god'), 6, 'god')
 ON DUPLICATE KEY UPDATE
 	`password` = VALUES(`password`),
-	`type` = VALUES(`type`);
+	`type` = VALUES(`type`),
+	`email` = VALUES(`email`);
 
 INSERT INTO `players` (
 	`name`, `group_id`, `account_id`, `level`, `vocation`,
