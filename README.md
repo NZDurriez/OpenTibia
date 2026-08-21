@@ -82,7 +82,7 @@ Starter accounts from `server/init-accounts.sql`:
 | `1` | `1` | `Player` | Normal player, level 8 |
 | `god` | `god` | `God` | God group, for testing commands |
 
-The bundled Windows client (`client/otclient.exe`) is already set to HTTP login at `http://127.0.0.1:8080`. The first launch may download 13.10 graphics into `client/data/things/1310/`. See `client/README.md`.
+The bundled Windows client (`client/otclient.exe`) is already set to HTTP login at `http://127.0.0.1:8080`. The first launch asks to download 13.10 graphics into `client/data/things/1310/`. If that fails, run `client/fetch-13.10-assets.bat`. See `client/README.md`.
 
 If you use a different 13.x client, connect to **127.0.0.1** with HTTP login port **8080**.
 
