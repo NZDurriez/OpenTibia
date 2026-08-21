@@ -98,9 +98,8 @@ local function load(version)
         messageBox:raise()
         messageBox:focus()
     end)
-
-    g_game.setClientVersion(0)
-    g_game.setProtocolVersion(0)
+    -- Do not reset the client version to 0 here. That retries /data/things/0/Tibia.dat
+    -- and hides the real problem (missing protocol 13.10 assets in data/things/1310/).
 end
 
 function ThingsLoaderController:onInit()

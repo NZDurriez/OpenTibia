@@ -177,6 +177,10 @@ local function cloneConfig()
     config.releasesUrl = string.format('https://api.github.com/repos/%s/releases?per_page=100', config.repository)
   end
 
+  if not config.tagsUrl and config.repository then
+    config.tagsUrl = string.format('https://api.github.com/repos/%s/tags?per_page=100', config.repository)
+  end
+
   return config
 end
 
@@ -398,8 +402,7 @@ local function hasModernClientFilesAtPath(basePath, installPath)
   local fileExists = installPath and installFileExists or g_resources.fileExists
   local readFile = installPath and readInstallFile or g_resources.readFileContents
 
-  if not fileExists(basePath .. 'catalog-content.json') or
-     not fileExists(basePath .. 'assets.json.sha256') then
+  if not fileExists(basePath .. 'catalog-content.json') then
     return false
   end
 
@@ -593,6 +596,24 @@ local function findReleaseForVersion(releases, version)
     local name = tostring(release.name or ''):lower()
     if tag:find(label, 1, true) or name:find(label, 1, true) then
       return release
+    end
+  end
+  return nil
+end
+
+local function findTagReleaseForVersion(tags, version)
+  local label = versionLabel(version):lower()
+  if type(tags) ~= 'table' then
+    return nil
+  end
+  for _, tag in ipairs(tags) do
+    local name = tostring(tag.name or '')
+    if name:lower():find(label, 1, true) then
+      return {
+        tag_name = name,
+        name = name,
+        assets = {}
+      }
     end
   end
   return nil
@@ -1229,6 +1250,11 @@ local function installFromArchive(config, descriptor, callback)
     local function extractAssetHashIdentifier()
       logInfo(string.format('Extracting asset hash identifier for client %s.', label))
       extractDownloadedArchive(config, path, thingsDestination, 'assets.json.sha256', false)
+      local hashPath = thingsDestination .. '/assets.json.sha256'
+      if not installFileExists(hashPath) then
+        -- Older tags such as 13.10.12892 do not include this file.
+        writeInstallFile(config, hashPath, 'generated-locally\n')
+      end
       extractSoundAssets()
     end
 
@@ -1429,15 +1455,49 @@ local function resolveFromCustomManifest(config, version, callback)
   end)
 end
 
-local function resolveFromGitHubReleases(config, version, callback)
-  if not config.releasesUrl then
+local function resolveFromGitHubTags(config, version, callback)
+  if not config.tagsUrl then
     return callback(nil)
   end
 
-  local cacheKey = tostring(config.releasesUrl or config.repository or '')
+  local cacheKey = 'tags:' .. tostring(config.tagsUrl or config.repository or '')
+  local function finish(tags)
+    local release = findTagReleaseForVersion(tags, version)
+    callback(release and descriptorFromRelease(config, version, release) or nil)
+  end
+
   if releasesCache[cacheKey] then
-    local release = findReleaseForVersion(releasesCache[cacheKey], version)
-    return callback(release and descriptorFromRelease(config, version, release) or nil)
+    return finish(releasesCache[cacheKey])
+  end
+
+  activeDownload.operationId = httpGetJSON(config, config.tagsUrl, function(data, err)
+    if not activeDownload then
+      return
+    end
+    activeDownload.operationId = nil
+    if err then
+      return callback(nil, err)
+    end
+    releasesCache[cacheKey] = data
+    finish(data)
+  end)
+end
+
+local function resolveFromGitHubReleases(config, version, callback)
+  if not config.releasesUrl then
+    return resolveFromGitHubTags(config, version, callback)
+  end
+
+  local cacheKey = tostring(config.releasesUrl or config.repository or '')
+  local function afterReleases(release)
+    if release then
+      return callback(descriptorFromRelease(config, version, release))
+    end
+    resolveFromGitHubTags(config, version, callback)
+  end
+
+  if releasesCache[cacheKey] then
+    return afterReleases(findReleaseForVersion(releasesCache[cacheKey], version))
   end
 
   activeDownload.operationId = httpGetJSON(config, config.releasesUrl, function(data, err)
@@ -1446,12 +1506,11 @@ local function resolveFromGitHubReleases(config, version, callback)
     end
     activeDownload.operationId = nil
     if err then
-      return callback(nil, err)
+      return resolveFromGitHubTags(config, version, callback)
     end
 
     releasesCache[cacheKey] = data
-    local release = findReleaseForVersion(releasesCache[cacheKey], version)
-    callback(release and descriptorFromRelease(config, version, release) or nil)
+    afterReleases(findReleaseForVersion(releasesCache[cacheKey], version))
   end)
 end
 

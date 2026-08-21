@@ -327,6 +327,32 @@ end
 function EnterGame.firstShow()
     EnterGame.show()
 
+    local clientVersion = nil
+    if clientBox and clientBox.getCurrentOption then
+        local option = clientBox:getCurrentOption()
+        if type(option) == 'table' then
+            clientVersion = tonumber(option.text or option.data)
+        else
+            clientVersion = tonumber(option)
+        end
+    end
+    if not clientVersion and Servers_init and next(Servers_init) ~= nil then
+        local _, valuesInit = next(Servers_init)
+        clientVersion = tonumber(valuesInit.protocol)
+    end
+
+    if clientVersion and clientVersion >= 1281 and modules.client_assets
+        and modules.client_assets.ensureClientVersion
+        and (not modules.client_assets.isEnabled or modules.client_assets.isEnabled())
+        and not modules.client_assets.isClientVersionInstalled(clientVersion) then
+        modules.client_assets.ensureClientVersion(clientVersion, function(success)
+            if success then
+                g_game.setClientVersion(clientVersion)
+                g_game.setProtocolVersion(g_game.getClientProtocolVersion(clientVersion))
+            end
+        end)
+    end
+
     local host = g_settings.get('host')
     local servers = g_settings.getNode('ServerList') or {}
     local serverData = servers[host] or {}
@@ -942,12 +968,18 @@ function EnterGame.setUniqueServer(host, port, protocol, windowWidth, windowHeig
     local server = Servers_init[host]
     enterGame.disableToken = not (server and server.useAuthenticator)
 
-    -- preload the assets
-    -- this is for the client_bottommenu module
-    -- it needs images of outfits
-    -- so it can display the boosted creature
-    g_game.setClientVersion(clientVersion)
-    g_game.setProtocolVersion(g_game.getClientProtocolVersion(clientVersion))
+    -- Preload appearances only when they are already on disk. Otherwise
+    -- setClientVersion(1310) fails, then the loader retries version 0 and
+    -- asks for Tibia.dat/Tibia.spr. Missing 13.10 assets are downloaded from
+    -- EnterGame.firstShow / login instead.
+    local assetsReady = clientVersion < 1281
+        or (modules.client_assets
+            and modules.client_assets.isClientVersionInstalled
+            and modules.client_assets.isClientVersionInstalled(clientVersion))
+    if assetsReady then
+        g_game.setClientVersion(clientVersion)
+        g_game.setProtocolVersion(g_game.getClientProtocolVersion(clientVersion))
+    end
 end
 
 function EnterGame.setServerInfo(message)

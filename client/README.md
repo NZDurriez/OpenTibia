@@ -23,7 +23,9 @@ The login screen is pre-filled:
 
 Protocol 13.10 needs Tibia 13.10 appearance files. They are **not** in git.
 
-On the first start, the client can download them into `data/things/1310/` (OTClient's `client_assets` installer). That needs internet access and can take a few minutes.
+When the client starts, it should ask: **Assets for client 13.10 are not installed. Download them now?** Click **Download** and wait. That pulls tag `13.10.12892` from the OTClient asset repository into `data/things/1310/`.
+
+If that prompt does not appear, or the download fails, double-click `fetch-13.10-assets.bat` in this folder.
 
 If you already have a Tibia 13.10 client you are allowed to use, copy its `assets` folder contents into `client/data/things/1310/` instead.
 
