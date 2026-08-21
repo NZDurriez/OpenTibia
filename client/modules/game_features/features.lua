@@ -9,7 +9,8 @@ controller:registerEvents(g_game, {
 
         g_game.enableFeature(GameFormatCreatureName)
 
-        -- For Walk
+        -- For Walk. Keep GameAllowPreWalk enabled: without it OTClient will not
+        -- step at all if client/server positions ever disagree.
         g_game.enableFeature(GameAllowPreWalk)
         g_game.enableFeature(GameMapCache)
         -- g_game.enableFeature(GameSmoothWalkElevation)

@@ -102,6 +102,12 @@ local function walk(dir)
         if lastWalkDir ~= dir then
             nextWalkDir = dir
         end
+        -- Without prewalk, canWalk() stays false forever if the client tile
+        -- disagrees with the server. Still send one walk so we can resync.
+        if not g_game.getFeature(GameAllowPreWalk) and not player:isWalkLocked() then
+            modules.game_interface.lastManualWalk = g_clock.millis()
+            g_game.walk(dir)
+        end
         return
     end
 
@@ -111,12 +117,14 @@ local function walk(dir)
     if g_game.getFeature(GameAllowPreWalk) then
         local toPos = Position.translatedToDirection(player:getPosition(), dir)
         local toTile = g_map.getTile(toPos)
-        if not toTile or not toTile:isWalkable() then
-            if not canChangeFloor(toPos, 1) and not canChangeFloor(toPos, -1) then
+        if toTile and toTile:isWalkable() then
+            player:preWalk(dir)
+        elseif not canChangeFloor(toPos, 1) and not canChangeFloor(toPos, -1) then
+            -- Known wall: do not send. Unknown tile (map not cached yet): still
+            -- ask the server, otherwise the player can freeze at login.
+            if toTile then
                 return false
             end
-        else
-            player:preWalk(dir)
         end
     end
 

@@ -90,6 +90,14 @@ If you use a different 13.x client, connect to **127.0.0.1** with HTTP login por
 
 Change these passwords before exposing the server to a network.
 
+## Walking
+
+Use the **arrow keys** or **numpad**. WASD only walks after you turn chat off (the button on the right of the chat input).
+
+Leave `GameAllowPreWalk` enabled in `client/modules/game_features/features.lua`. Turning it off makes the client refuse every step once it disagrees with the server about your tile.
+
+`server/config.lua` must keep `maxPacketsPerSecond` at **500** (or another high value). **25** kicks you while walking. **0** kicks you immediately. Restart the server after changing it (`start-windows.bat`).
+
 ## Useful files
 
 - `server/config.lua` — IP, ports, rates, MySQL, world name
