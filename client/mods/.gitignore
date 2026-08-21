@@ -1,3 +1,4 @@
-*
-!/README.txt
-!.gitignore
+# Bundled mods are part of this package (including client_mods).
+# Ignore only files the client may write here at runtime.
+*.log
+*.tmp
