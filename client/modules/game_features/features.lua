@@ -222,7 +222,11 @@ controller:registerEvents(g_game, {
         end
 
         if version >= 1290 then
-            g_game.enableFeature(GameSequencedPackets)
+            -- TFS 1.6 only uses sequence checksums for official CipSoft QT clients,
+            -- not OTClient. Leaving this enabled desyncs packets after character
+            -- select: the server logs the player in, the client stays on
+            -- "Connecting to game server...".
+            g_game.disableFeature(GameSequencedPackets)
             g_game.enableFeature(GameBosstiary)
             g_game.enableFeature(GameThingClock)
             g_game.enableFeature(GameThingCounter)
