@@ -1,0 +1,16 @@
+*.log
+.DS_Store
+Thumbs.db
+*.swp
+
+server/data/logs/*
+!server/data/logs/.gitkeep
+server/data/reports/clients/*
+!server/data/reports/clients/.gitkeep
+
+vendor/forgottenserver-1.6/build/
+client/*.log
+client/data/things/*/
+!client/data/things/.gitignore
+!client/data/things/README.md
+client/data/sounds/*/

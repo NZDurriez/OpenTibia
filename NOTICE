@@ -1,0 +1,27 @@
+This repository packages The Forgotten Server, a free and open-source MMORPG
+server emulator.
+
+The Forgotten Server
+  https://github.com/otland/forgottenserver
+  Copyright (C) The Forgotten Server Authors
+  Licensed under the GNU General Public License, version 2
+  Tag v1.6 / commit 098641981400f8ff89959f427f0e8718d9dd22e2
+
+Engine source corresponding to the included binaries is in
+vendor/forgottenserver-1.6/. The Windows executable and DLLs are the official
+v1.6 release assets from OTLand. The Linux executable was compiled from the
+same tag.
+
+OTClient - Redemption
+  https://github.com/opentibiabr/otclient
+  Copyright (c) 2010-2020 OTClient
+  Licensed under the MIT License
+  Tag 4.1 / commit dd5641492a71e966b96b8a91398b44bb3df67d88
+
+The Windows client executable is the official 4.1 OpenGL x64 build
+(otclient_gl_x64.exe). Lua data, modules, and mods are from the same tag.
+See client/LICENSE and client/BUILDINFO.txt.
+
+The official Tibia client, sprites, and related CipSoft assets are not included
+and are not part of this project. OTClient may download 13.10 appearance files
+into client/data/things/1310/ on first launch if you allow it.

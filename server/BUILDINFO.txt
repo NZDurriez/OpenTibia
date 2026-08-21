@@ -1,0 +1,23 @@
+Open Tibia server package
+=========================
+
+Engine: The Forgotten Server 1.6
+Upstream: https://github.com/otland/forgottenserver/tree/v1.6
+Commit: 098641981400f8ff89959f427f0e8718d9dd22e2
+Protocol: 13.10 / 13.11
+License: GNU GPL v2 (see LICENSE)
+
+Linux x86_64 binary (tfs)
+- Built from the v1.6 tag with GCC 13.3 on Ubuntu 24.04
+- CMake options: -DCMAKE_BUILD_TYPE=Release -DUSE_LUAJIT=OFF -DENABLE_UNITY_BUILD=ON -DSKIP_GIT=ON
+- LTO/IPO enabled
+- Intended for 64-bit Linux with glibc 2.39+ (Ubuntu 24.04 / Debian 13 and newer)
+- Runtime packages: libboost-iostreams1.83.0 libboost-locale1.83.0 libboost-json1.83.0 libfmt9 libpugixml1v5 liblua5.3-0 libmysqlclient21 libssl3t64
+
+Windows x64 binary (theforgottenserver-x64.exe)
+- Official OTLand release asset: tfs-1.6-windows-vcpkg.zip
+- https://github.com/otland/forgottenserver/releases/tag/v1.6
+- DLLs from that zip are included next to the executable
+
+Datapack
+- Official TFS 1.6 data/ map "forgotten" by Komic

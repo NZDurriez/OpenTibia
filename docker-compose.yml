@@ -1,0 +1,26 @@
+name: opentibia
+
+services:
+  db:
+    image: mariadb:11
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: forgottenserver
+      MARIADB_USER: forgottenserver
+      MARIADB_PASSWORD: tfs
+    ports:
+      - "3306:3306"
+    volumes:
+      - tfs-mariadb:/var/lib/mysql
+      - ./server/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./server/init-accounts.sql:/docker-entrypoint-initdb.d/02-accounts.sql:ro
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 15s
+
+volumes:
+  tfs-mariadb:

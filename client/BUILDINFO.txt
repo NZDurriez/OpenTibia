@@ -1,0 +1,28 @@
+OTClient - Redemption (mehah / OpenTibiaBR)
+==========================================
+
+Upstream: https://github.com/opentibiabr/otclient
+Tag: 4.1
+Commit: dd5641492a71e966b96b8a91398b44bb3df67d88
+License: MIT (see client/LICENSE)
+
+Windows x64 executable (otclient.exe)
+- Official OpenTibiaBR release asset: otclient-windows-solution-opengl.zip
+- https://github.com/opentibiabr/otclient/releases/tag/4.1
+- File in that zip: otclient_gl_x64.exe (OpenGL, statically linked)
+- Debug symbols (.pdb) are not included
+
+Lua data, modules, and mods
+- Copied from the same 4.1 tag
+- init.lua is preconfigured for this repo's TFS 1.6 server:
+  host http://127.0.0.1/login.php
+  HTTP port 8080
+  protocol 1310
+  HTTP login enabled
+
+Graphics / sounds
+- CipSoft Tibia 13.10 assets are NOT stored in git.
+- On first launch, OTClient 4.1 can download them via its client_assets
+  module (Services.clientAssets in init.lua) into data/things/1310/.
+- You may instead copy the official 13.10 client `assets` folder into
+  data/things/1310/ if you have the right to use those files.
